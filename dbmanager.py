@@ -32,6 +32,7 @@ class dbmanager:
         Returns:
             bool: return True if commit is succesful else return False
         """
+        self._csv_df.reset_index(drop=True, inplace=True)
         try:
             self._csv_df.to_csv(self._file_path, index=False)
             return True
@@ -122,7 +123,6 @@ class dbmanager:
                 raise e
             self._csv_df.loc[index, 'Date'] = parsed_date
 
-
         if amount:
             # Validate positive amount
             if amount <= 0:
@@ -138,19 +138,40 @@ class dbmanager:
         self.commit()
         return True
 
-    @property
-    def expenses(self)->pd.DataFrame:
-        """Table of all expense data with 
-        columns = ['Date', 'Amount', 'Category']
+    def get_expense(self, index:int)->dict:
+        """Get a single expense data
+
+        Args:
+            index (int): index position of required expense data
 
         Returns:
-            pd.DataFrame: DataFrame with all expense data
+            dict: Dictionary of Date, Amount, Category
         """
-        return self._csv_df
+        xpnse =  dict(self._csv_df.iloc[index])
+        xpnse['Date'] = str(xpnse['Date']).split(" ")[0]
+        return xpnse
+
+    @property
+    def expenses(self)->list[dict]:
+        """List of all expense data as dictionary with 
+        keys = ['id', 'Date', 'Amount', 'Category']
+
+        Returns:
+            dict: Dictionary with all expense data
+            dict.keys = (Date, Amount, Category, Index)
+        """
+        expenses = []
+        for index in self.indexes:
+            Xpnse = dict(self._csv_df.iloc[index])
+            Xpnse['Date'] = str(Xpnse['Date']).split(" ")[0]
+            Xpnse['Index'] = index
+            expenses.append(Xpnse)
+            
+        return expenses
 
     @property
     def indexes(self):
-        return tuple(self._csv_df.index)
+        return tuple(self._csv_df.index.values)
 
     @property
     def categories(self)-> tuple[str]:
