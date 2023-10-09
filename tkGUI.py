@@ -1,8 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from tkcalendar import DateEntry
 import dbmanager as db
-import calendar as cal
 
 
 class SpendWiseApp:
@@ -112,7 +110,8 @@ class SpendWiseApp:
         entryframe.pack(side=tk.LEFT)
         
         # Labels
-        ttk.Label(labelframe, text="Date(y-m-d)", width=10).pack(padx=5, pady=5, side=tk.TOP)
+        ttk.Label(labelframe, text="Day-Month", width=10).pack(padx=5, pady=5, side=tk.TOP)
+        ttk.Label(labelframe, text="Year", width=10).pack(padx=5, pady=5, side=tk.TOP)
         ttk.Label(labelframe, text="Amount", width=10).pack(padx=5, pady=5, side=tk.TOP)
         ttk.Label(labelframe, text="Category", width=10).pack(padx=5, pady=5, side=tk.TOP)
         
@@ -125,16 +124,16 @@ class SpendWiseApp:
         yearVar = tk.IntVar(value=date[2])
         amountVar = tk.IntVar(value=amount)
         categoryVar = tk.StringVar(value=category)
-        days = [1,2,3,4,5,6]
-        months = [1,2,3,4,5,6]
-        years = [1,2,3,4,5,6]
+        days = [i for i in range(1,31)]
+        months = [i for i in range(1,13)]
+        years = [i for i in range(2000,2031)]
 
         # Entries
         dateframe = ttk.Frame(entryframe)
         dateframe.pack(side=tk.TOP)
-        ttk.OptionMenu(dateframe, yearVar, yearVar.get(), *years).pack(side=tk.LEFT)
         ttk.OptionMenu(dateframe, monthVar, monthVar.get(), *months).pack(side=tk.LEFT)
         ttk.OptionMenu(dateframe, dayVar, dayVar.get(), *days).pack(side=tk.LEFT)
+        ttk.OptionMenu(entryframe, yearVar, yearVar.get(), *years).pack(side=tk.TOP)
         ttk.Entry(entryframe, textvariable=amountVar, width=10).pack(padx=5, pady=5, side=tk.TOP)
         ttk.OptionMenu(entryframe, categoryVar, 'None').pack(padx=5, pady=5, side=tk.TOP)
 
